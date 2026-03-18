@@ -8,7 +8,7 @@ Returns term dictionary entries for search text as they are represented internal
 
 - Body:
 
-    - `term` (`string`): The term to return data for.
+    - `term` (`string|array<string>`): The term to return data for. If an array is provided, each element will be processed concurrently.
 
 ## Request Example
 
@@ -25,11 +25,14 @@ Returns term dictionary entries for search text as they are represented internal
 
 Due to this being a data format used internally by Yomitan, no guarantees are made for the stability or accuracy of the responses.
 
+If the input term is a string, an object will be returned with an `index` of `0`. If the input term is an array, an array of objects will be returned with the `index` corresponding to the index of the input term array.
+
 <details>
 <summary>Expand to view response</summary>
 
 ```json
 {
+  "index": 0,
   "dictionaryEntries": [
     {
       "type": "term",
