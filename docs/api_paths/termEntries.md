@@ -8,7 +8,7 @@ Returns term dictionary entries for search text as they are represented internal
 
 - Body:
 
-    - `term` (`string`): The term to return data for.
+    - `term` (`string|array<string>`): The term to return data for. If an array is provided, each element will be processed concurrently.
 
 ## Request Example
 
@@ -25,11 +25,14 @@ Returns term dictionary entries for search text as they are represented internal
 
 Due to this being a data format used internally by Yomitan, no guarantees are made for the stability or accuracy of the responses.
 
+If the input term is a string, an object will be returned with an `index` of `0`. If the input term is an array, an array of objects will be returned with the `index` corresponding to the index of the input term array.
+
 <details>
 <summary>Expand to view response</summary>
 
 ```json
 {
+  "index": 0,
   "dictionaryEntries": [
     {
       "type": "term",
@@ -53,6 +56,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
       "headwords": [
         {
           "index": 0,
+          "headwordIndex": 0,
           "term": "分かる",
           "reading": "わかる",
           "sources": [
@@ -714,6 +718,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
           "dictionaryIndex": 2,
           "dictionaryAlias": "JPDBv2㋕",
           "hasReading": true,
+          "frequencyMode": "rank-based",
           "frequency": 455,
           "displayValue": "455㋕",
           "displayValueParsed": false
@@ -725,6 +730,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
           "dictionaryIndex": 2,
           "dictionaryAlias": "JPDBv2㋕",
           "hasReading": true,
+          "frequencyMode": "rank-based",
           "frequency": 465,
           "displayValue": "465",
           "displayValueParsed": false
@@ -736,6 +742,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
           "dictionaryIndex": 3,
           "dictionaryAlias": "BCCWJ",
           "hasReading": true,
+          "frequencyMode": "rank-based",
           "frequency": 85,
           "displayValue": null,
           "displayValueParsed": false
@@ -747,6 +754,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
           "dictionaryIndex": 3,
           "dictionaryAlias": "BCCWJ",
           "hasReading": true,
+          "frequencyMode": "rank-based",
           "frequency": 105,
           "displayValue": null,
           "displayValueParsed": false
@@ -775,6 +783,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
       "headwords": [
         {
           "index": 0,
+          "headwordIndex": 0,
           "term": "解る",
           "reading": "わかる",
           "sources": [
@@ -1436,6 +1445,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
           "dictionaryIndex": 2,
           "dictionaryAlias": "JPDBv2㋕",
           "hasReading": true,
+          "frequencyMode": "rank-based",
           "frequency": 455,
           "displayValue": "455㋕",
           "displayValueParsed": false
@@ -1447,6 +1457,7 @@ Due to this being a data format used internally by Yomitan, no guarantees are ma
           "dictionaryIndex": 2,
           "dictionaryAlias": "JPDBv2㋕",
           "hasReading": true,
+          "frequencyMode": "rank-based",
           "frequency": 8354,
           "displayValue": "8354",
           "displayValueParsed": false
