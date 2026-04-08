@@ -177,6 +177,25 @@ while True:
         print("This message is purely informational, the provided ID will still be added")
 
     additional_extension_ids.append(extension_id)
+
+# configure API key
+print()
+print("Optionally set an API key to restrict access to the Yomitan API.")
+print("Leave empty to disable authentication (default).")
+print("If set, enter the same key in Yomitan settings under General → Yomitan API.")
+api_key = input("API key (leave empty to skip): ").strip()
+config_path = os.path.join(DIR, "yomitan_api_config.json")
+existing_config: dict = {}
+try:
+    with open(config_path, "r", encoding="utf8") as f:
+        existing_config = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    pass
+existing_config["api_key"] = api_key
+with open(config_path, "w", encoding="utf8") as f:
+    json.dump(existing_config, f, indent=4)
+print(f"Config written to {config_path}")
+
 script_path = os.path.join(DIR, "yomitan_api.py")
 if platform_data["platform"] == "windows":
     bat_path = os.path.join(DIR, "yomitan_api.bat")

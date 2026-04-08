@@ -15,7 +15,17 @@ import urllib
 ADDR = "127.0.0.1"
 PORT = 19633
 PROCESS_STARTUP_WAIT = 5
-API_KEY = os.environ.get("YOMITAN_API_KEY", "")
+CONFIG_FILE = os.path.join(os.path.realpath(os.path.dirname(__file__)), "yomitan_api_config.json")
+
+def _load_config() -> dict:
+    try:
+        with open(CONFIG_FILE, "r", encoding="utf8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+_config = _load_config()
+API_KEY: str = os.environ.get("YOMITAN_API_KEY", "") or _config.get("api_key", "")
 AUTH_MAX_FAILURES = 5
 AUTH_LOCKOUT_SECONDS = 60
 
