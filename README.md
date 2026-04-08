@@ -58,6 +58,24 @@ If you have built Yomitan from source, you need to obtain the extension ID for Y
 
     - Rerun the script as seen above and when it displays `Add more extension IDs`, paste the extension ID **with the brackets** in the input. It should work. Continue with the tutorial.
 
+## Authentication
+
+API key authentication is optional. To enable it, set the `YOMITAN_API_KEY` environment variable before starting the server:
+
+```bash
+YOMITAN_API_KEY=your-secret-key python yomitan_api.py
+```
+
+When enabled, all requests must include the key in the `X-API-Key` header:
+
+```bash
+curl -X POST http://127.0.0.1:19633/serverVersion -H "X-API-Key: your-secret-key"
+```
+
+After 5 consecutive failed attempts the server locks out for 60 seconds and returns `429`. Lockout events are logged to `error.log`.
+
+If `YOMITAN_API_KEY` is not set, the server accepts all requests as before.
+
 ## API Paths
 
 By default, the api is hosted on `http://127.0.0.1:19633`. To change this, edit `ADDR` and `PORT` in `yomitan_api.py`.

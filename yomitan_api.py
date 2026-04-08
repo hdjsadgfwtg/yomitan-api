@@ -7,6 +7,7 @@ import os
 import signal
 import struct
 import sys
+import threading
 import time
 import traceback
 import urllib
@@ -14,6 +15,13 @@ import urllib
 ADDR = "127.0.0.1"
 PORT = 19633
 PROCESS_STARTUP_WAIT = 5
+API_KEY = os.environ.get("YOMITAN_API_KEY", "")
+AUTH_MAX_FAILURES = 5
+AUTH_LOCKOUT_SECONDS = 60
+
+_auth_failures = 0
+_auth_lockout_until = 0.0
+_auth_lock = threading.Lock()
 
 YOMITAN_API_NATIVE_MESSAGING_VERSION = 1
 BLACKLISTED_PATHS = ["favicon.ico"]
@@ -79,6 +87,26 @@ def handle_invalid_method(request_handler) -> None:
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self) -> None:
+        if API_KEY:
+            global _auth_failures, _auth_lockout_until
+            with _auth_lock:
+                now = time.time()
+                if _auth_lockout_until > now:
+                    remaining = int(_auth_lockout_until - now)
+                    self.send_error(429, f"Too Many Requests: try again in {remaining}s")
+                    self.end_headers()
+                    return
+                if self.headers.get("X-API-Key") != API_KEY:
+                    _auth_failures += 1
+                    if _auth_failures >= AUTH_MAX_FAILURES:
+                        _auth_lockout_until = now + AUTH_LOCKOUT_SECONDS
+                        _auth_failures = 0
+                        error_log(f"Auth lockout triggered after {AUTH_MAX_FAILURES} failures")
+                    self.send_error(401, "Unauthorized: invalid or missing X-API-Key header")
+                    self.end_headers()
+                    return
+                _auth_failures = 0
+
         parsed_url = urllib.parse.urlparse(self.path)
         path = parsed_url.path[1:]
         params = urllib.parse.parse_qs(parsed_url.query)

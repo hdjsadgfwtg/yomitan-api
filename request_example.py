@@ -5,6 +5,8 @@ import requests
 
 request_url = "http://127.0.0.1:19633"
 request_timeout = 10
+api_key = os.environ.get("YOMITAN_API_KEY", "")
+request_headers = {"X-API-Key": api_key} if api_key else {}
 
 request_output_dir = os.path.join(os.path.os.path.dirname(__file__), "request_example_results")
 os.makedirs(request_output_dir, exist_ok = True)
@@ -21,7 +23,7 @@ def dump_json(filename: str, json_dict: dict) -> None:
 
 def yomitan_version() -> None:
     print("Requesting yomitanVersion:")
-    response = requests.post(request_url + "/yomitanVersion", timeout = request_timeout)
+    response = requests.post(request_url + "/yomitanVersion", timeout = request_timeout, headers = request_headers)
     print(response)
     print(response.text)
     dump_json("yomitanVersion", response.json())
@@ -31,7 +33,7 @@ def term_entries() -> None:
     params = {
         "term": "わかる",
     }
-    response = requests.post(request_url + "/termEntries", json = params, timeout = request_timeout)
+    response = requests.post(request_url + "/termEntries", json = params, timeout = request_timeout, headers = request_headers)
     print(response)
     print(elide(response.text))
     dump_json("termEntries", response.json())
@@ -41,7 +43,7 @@ def kanji_entries() -> None:
     params = {
         "character": "分",
     }
-    response = requests.post(request_url + "/kanjiEntries", json = params, timeout = request_timeout)
+    response = requests.post(request_url + "/kanjiEntries", json = params, timeout = request_timeout, headers = request_headers)
     print(response)
     print(elide(response.text))
     dump_json("kanjiEntries", response.json())
@@ -55,7 +57,7 @@ def anki_fields_term() -> None:
         "maxEntries": 1,
         "includeMedia": False,
     }
-    response = requests.post(request_url + "/ankiFields", json = params, timeout = request_timeout)
+    response = requests.post(request_url + "/ankiFields", json = params, timeout = request_timeout, headers = request_headers)
     print(response)
     print(elide(response.text))
     dump_json("ankiFields_term", response.json())
@@ -69,7 +71,7 @@ def anki_fields_kanji() -> None:
         "maxEntries": 1,
         "includeMedia": False,
     }
-    response = requests.post(request_url + "/ankiFields", json = params, timeout = request_timeout)
+    response = requests.post(request_url + "/ankiFields", json = params, timeout = request_timeout, headers = request_headers)
     print(response)
     print(elide(response.text))
     dump_json("ankiFields_kanji", response.json())
@@ -80,7 +82,7 @@ def tokenize() -> None:
         "text": "ヨナグニサンはすごく大きいとかわいい、ガの触角最高",
         "scanLength": 10,
     }
-    response = requests.post(request_url + "/tokenize", json = params, timeout = request_timeout)
+    response = requests.post(request_url + "/tokenize", json = params, timeout = request_timeout, headers = request_headers)
     print(response)
     print(elide(response.text))
     dump_json("tokenize", response.json())
